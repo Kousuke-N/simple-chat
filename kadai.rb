@@ -11,7 +11,7 @@ ss = TCPServer.open(8080)
 
 def get_thread_item(thread)
   <<~EOHTML
-    <a href="#{thread["id"]}"">
+    <a href="#{thread["id"]}" class="thread-item__content">
       <h2>#{thread["name"]}</h2>
     </a>
   EOHTML
@@ -23,18 +23,13 @@ def get_thread_list_page(threads)
     thread_items.push(get_thread_item(thread))
   end 
   <<~EOHTML
-    <html>
-      <body>
-        <h1>スレッド一覧</h1>
-        <form method="post">
-          <label>スレッド名：<input type="text" name="name" placeholder="スレッド名を入力"></label><br>
-          <input type="submit" value="send">
-        </form>
-        <hr>
-
-        #{ thread_items.join("<br>") }
-      </body>
-    </html>
+    <h1>スレッド一覧</h1>
+    <form method="post">
+      <label>スレッド名：<input type="text" name="name" placeholder="スレッド名を入力"></label>
+      <input type="submit" value="send">
+    </form>
+    <h2>
+    #{ thread_items.join("\n") }
   EOHTML
 end
 
@@ -42,7 +37,7 @@ def get_comment_item(comment)
   <<~EOHTML
     <div>
       <p>
-        #{comment["creator_name"]}:#{comment["created_at"]}<br>
+        #{comment["creator_name"]}:#{comment["created_at"]}
         #{comment["comment"]}
       </p>
       <hr>
@@ -56,20 +51,16 @@ def get_thread_detail_page(thread, comments)
     comment_items.push(get_comment_item(comment))
   end
   <<~EOHTML
-  <html>
-    <body>
-      <a href="/">一覧に戻る</a>
-      <h1>#{thread["name"]}</h1>
-      <hr>
-      <form method="post">
-        <label>name：<input type="text" name="name" placeholder="名前を入力"></label><br>
-        <label>comment：<input type="text" name="comment" placeholder="コメントを入力"></label>
-        <input type="submit" value="send">
-      </form>
-      <hr>
-      #{ comment_items.join("") }
-    </body>
-  </html> 
+    <a href="/">一覧に戻る</a>
+    <h1>#{thread["name"]}</h1>
+    <hr>
+    <form method="post">
+      <label>name：<input type="text" name="name" placeholder="名前を入力"></label>
+      <label>comment：<input type="text" name="comment" placeholder="コメントを入力"></label>
+      <input type="submit" value="send">
+    </form>
+    <hr>
+    #{ comment_items.join("") }
   EOHTML
 end
 
@@ -89,8 +80,9 @@ end
 
 loop do
   Thread.start(ss.accept) do |s|
+    is_html = true
     request = s.gets
-    
+
 
     method, path = request.split                    # In this case, method = "POST" and path = "/"
     headers = {}
@@ -129,7 +121,7 @@ loop do
       status = "200 OK"
       header = "Content-Type: text/html; charset=utf-8"
 
-      body = "スレッド一覧"
+      body = get_thread_list_page(threads)
     elsif path.match(/\/[a-zA-Z\d]*.css$/)
       is_html = false
       header = "Content-Type: text/css; charset=utf-8"
