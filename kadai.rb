@@ -100,10 +100,18 @@ loop do
     end
     raw_data = s.read(headers["Content-Length"].to_i)  # Read the POST data as specified in the header
     data = Hash[URI.decode_www_form(raw_data)]
+
+    json_data = get_json_data
+    if !json_data
+      json_data = {
+        "threads": [],
+        "comments": []
+      }
+    end
+    puts json_data
     
     if path == "/" 
       threads_data = []
-      json_data = get_json_data
       threads = json_data["threads"]
 
       if method == "POST" && data["name"]
@@ -134,7 +142,6 @@ loop do
       end
     elsif path.match(/\/[0-9]+/)
       id = path.match(/[0-9]+/)[0].to_i
-      json_data = get_json_data
       thread = json_data["threads"].filter{ |thread| thread["id"] == id }[0]
       comments = json_data["comments"].filter{ |comment| comment["thread_id"] == id }
       
