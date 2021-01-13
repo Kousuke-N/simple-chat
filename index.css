@@ -1,0 +1,27 @@
+:root {
+  --app-border-color: #999;
+  --app-text-color: #333;
+}
+* {
+  color: var(--app-text-color);
+}
+a {
+  text-decoration: none;
+}
+a:hover {
+  color: var(--app-text-color);
+}
+a:active {
+  color: var(--app-text-color);
+}
+a.no-color-change {
+  color: var(--app-text-color);
+}
+
+.thread-item__content {
+  width: 100%;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  border-bottom: 0.5px solid var(--app-border-color); 
+}

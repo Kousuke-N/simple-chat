@@ -122,7 +122,16 @@ loop do
       header = "Content-Type: text/html; charset=utf-8"
 
       body = "スレッド一覧"
-      body = get_thread_list_page(threads)
+    elsif path.match(/\/[a-zA-Z\d]*.css$/)
+      is_html = false
+      header = "Content-Type: text/css; charset=utf-8"
+      begin
+        status = "200 OK"
+        body = File.read(path.split('/')[1])
+      rescue => error
+        status = "404"
+        body = ""
+      end
     elsif path.match(/\/[0-9]+/)
       id = path.match(/[0-9]+/)[0].to_i
       json_data = get_json_data
@@ -157,7 +166,25 @@ loop do
       HTTP/1.0 #{status}
       #{header}
 
-      #{body}
+      #{
+        if is_html
+          <<~EOHTML
+            <html>
+              <head>
+                <link href="index.css" rel="stylesheet">
+                <link href="normalize.css" rel="stylesheet">
+              </head>
+              <body>
+                #{body}
+              </body>
+            </html>
+          EOHTML
+        else
+          <<~EOHTML
+            #{body}
+          EOHTML
+        end
+      }
     EOHTTP
 
     puts "#{Time.new} #{status} #{path}"
