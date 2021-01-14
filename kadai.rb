@@ -32,8 +32,7 @@ def get_thread_list_page(threads, latest_comments=[])
       <label>スレッドを作成します：<input type="text" name="name" placeholder="スレッド名を入力"></label>
       <input type="submit" value="send">
     </form>
-    <h2>
-    #{ thread_items.length > 0 ? thread_items.join("\n") : "スレッドは0件です" }
+    #{ thread_items.length > 0 ? "<h2>#{thread_items.join("\n")}</h2>" : "<p>スレッドは0件です</p>" }
   EOHTML
 end
 
@@ -70,8 +69,15 @@ def get_thread_detail_page(thread, comments)
 end
 
 def get_json_data
-  open(THREADS_FILE) do |j|
-    JSON.load(j, nil, symbolize_names: true, create_additions: false)
+  begin
+    open(THREADS_FILE) do |j|
+      JSON.load(j, nil, symbolize_names: true, create_additions: false)
+    end
+  rescue Errno::ENOENT
+    {
+      :threads => [],
+      :comments => []
+    }
   end
 end
 
@@ -170,7 +176,8 @@ loop do
         header = "Content-Type: text/html; charset=utf-8"
         body = get_thread_detail_page(thread,comments)
       else
-        status = "404"
+        status = "301"
+        header = "Location: /"
       end
     else
       status = "404"
