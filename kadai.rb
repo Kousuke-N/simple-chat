@@ -116,16 +116,6 @@ loop do
       threads_data = []
       threads = json_data[:threads]
       comments = json_data[:comments]
-      latest_comments = threads.map do |t|
-        thread_comments = comments.filter { |c| c[:thread_id] == t[:id] }
-        if thread_comments.size > 0
-          thread_comment_dates = thread_comments.map { |c| c[:created_at] }
-          thread_comments[thread_comment_dates.index(thread_comment_dates.max)]
-        else
-          {}
-        end
-      end
-      puts latest_comments
 
       if method == "POST" && data[:name]
         thread = {}
@@ -137,7 +127,18 @@ loop do
           JSON.dump(json_data, j)
         end
       end
+      
+      latest_comments = threads.map do |t|
+        thread_comments = comments.filter { |c| c[:thread_id] == t[:id] }
+        if thread_comments.size > 0
+          thread_comment_dates = thread_comments.map { |c| c[:created_at] }
+          thread_comments[thread_comment_dates.index(thread_comment_dates.max)]
+        else
+          {}
+        end
+      end
 
+      puts threads
 
       status = "200 OK"
       header = "Content-Type: text/html; charset=utf-8"
