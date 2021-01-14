@@ -5,23 +5,39 @@
 * {
   color: var(--app-text-color);
 }
-a {
+h2 {
+  margin: 0;
+}
+
+.item__content {
+  width: 100%;
+  border-bottom: 0.5px solid var(--app-border-color); 
+  display: block;
+}
+.item__content {
   text-decoration: none;
 }
-a:hover {
+.item__content:hover {
   color: var(--app-text-color);
 }
-a:active {
+.item__content:active {
   color: var(--app-text-color);
 }
-a.no-color-change {
+.item__content.no-color-change {
   color: var(--app-text-color);
 }
 
-.thread-item__content {
-  width: 100%;
-  padding: 16px;
+.item__header {
   display: flex;
   align-items: center;
-  border-bottom: 0.5px solid var(--app-border-color); 
+}
+.item__header-title {
+  font-size: 20px;
+  flex-grow: 1;
+}
+.item__header-time {
+  font-size: 14px;
+}
+.item__comment {
+  font-size: 14px;
 }
