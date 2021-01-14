@@ -43,7 +43,7 @@ def get_comment_item(comment)
         <h2 class="item__header-title">#{comment[:creator_name]}</h2>
         <p class="item__header-time">#{comment[:created_at]}</p>
       </div>
-      <p class="item__comment">最新のコメント：#{ comment[:comment] || "コメントがありません"}</p>
+      <p class="item__comment">#{ comment[:comment] || "コメントがありません"}</p>
     </div>
   EOHTML
 end
